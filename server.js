@@ -94,7 +94,37 @@ app.get("/recipe", (req, res) => {
     });
   });
 
-
+// Get - gets the todo with the given id
+app.get("/recipe/:id", function (req, res) {
+    res.setHeader("Content-Type", "application/json");
+    console.log(`getting recipe with id: ${req.params.id}`);
+    Recipe.findById(req.params.id, (err, recipe) => {
+      // check if there was an error
+      if (err) {
+        console.log(
+          `there was an error finding a recipe with id ${req.params.id}`,
+          err
+        );
+        // send back the error
+        res.status(500).json({
+          message: `unable to find recipe with id ${req.params.id}`,
+          error: err,
+        });
+      } else if (recipe === null) {
+        console.log(`unable to find recipe with id ${req.params.id}`);
+        res.status(404).json({
+          message: `recipe with id ${req.params.id} not found`,
+          error: err,
+        });
+      } else {
+        // success!!!! return the recipe
+        res.status(200).json(recipe);
+      }
+    });
+  });
+  
+  let nextID = 0;
+  
 
 
 
