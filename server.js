@@ -13,18 +13,18 @@ app.use(express.json({}));
 
 module.exports = app;
 
-// Post - crates one todo (does not have a URL param)
+// Post - crates one recipe (does not have a URL param)
 app.post("/recipe", function (req, res) {
   res.setHeader("Content-Type", "application/json");
   console.log(`creating a recipe with body`, req.body);
 
-  let recipe = {
+  let newRecipe = {
     name: req.body.name || "",
     ingredients: req.body.ingredients || "",
     instructions: req.body.instructions || "",
   };
 
-  Recipe.create(creatingTodo, (err, todo) => {
+  Recipe.create(newRecipe, (err, recipe) => {
     // check if there is an error
     if (err) {
       console.log(`unable to create recipe`);
@@ -39,7 +39,7 @@ app.post("/recipe", function (req, res) {
   });
 });
 
-// Delete - deletes the todo with the given id
+// Delete - deletes the recipe with the given id
 app.delete("/recipe/:id", function (req, res) {
   res.setHeader("Content-Type", "application/json");
   console.log(`deleting recipe with id: ${req.params.id}`);
@@ -59,62 +59,35 @@ app.delete("/recipe/:id", function (req, res) {
         error: err,
       });
     } else {
-      res.status(200).json(todo);
+      res.status(200).json(recipe);
     }
   });
 });
 
-
-
-// Get - gets all of the todos (does not have a URL param)
+// Get - gets all of the recipes (does not have a URL param)
 app.get("/recipe", (req, res) => {
-    res.setHeader("Content-Type", "application/json");
-    let findQuery = {};
-  
-    console.log(req.query);
-    if (req.query.name !== null && req.query.name !== undefined) {
-      findQuery.name = req.query.name;
+  res.setHeader("Content-Type", "application/json");
+  let findQuery = {};
+
+  console.log(req.query);
+  if (req.query.name !== null && req.query.name !== undefined) {
+    findQuery.name = req.query.name;
+  }
+
+  console.log("getting all recipes with find query", findQuery);
+  // return all of the recipes in the store
+
+  Recipe.find(findQuery, function (err, recipes) {
+    // check if there was an error
+    if (err) {
+      console.log(`there was an error listing Recipes`, err);
+      // send back the error
+      res.status(500).json({ message: `unable to list Recipes`, error: err });
+      return;
     }
-  
-    
-  
-    console.log("getting all recipes with find query", findQuery);
-    // return all of the recipes in the store
-  
-    Recipe.find(findQuery, function (err, recipes) {
-      // check if there was an error
-      if (err) {
-        console.log(`there was an error listing Recipes`, err);
-        // send back the error
-        res.status(500).json({ message: `unable to list Recipes`, error: err });
-        return;
-      }
-      // success!!! return all the todos
-      res.status(200).json(recipes);
-    });
+    // success!!! return all the recipes
+    res.status(200).json(recipes);
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 module.exports = app;

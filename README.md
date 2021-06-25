@@ -19,5 +19,5 @@ Boil the noodles and cook the sauce until it’s done.
 “noodles”,
 “sauce”,
 ]
-“instructions”: “do the thing with the stuff”
+“instructions”: “Boil the noodles and cook the sauce until it’s done.”
 }
