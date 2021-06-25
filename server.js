@@ -4,6 +4,7 @@
 // import express so you can use it
 const express = require("express");
 const cors = require("cors");
+// const { store, Todo } = require("./model");
 // instantiate your app/server
 const app = express();
 
@@ -12,11 +13,12 @@ const app = express();
 */
 
 // get
-
+app.get();
 // post
-
+app.post();
 // push
-
+app.push();
 // patch
-
+app.patch();
 // delete
+app.delete();
