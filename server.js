@@ -63,3 +63,58 @@ app.delete("/recipe/:id", function (req, res) {
     }
   });
 });
+
+
+
+// Get - gets all of the todos (does not have a URL param)
+app.get("/recipe", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    let findQuery = {};
+  
+    console.log(req.query);
+    if (req.query.name !== null && req.query.name !== undefined) {
+      findQuery.name = req.query.name;
+    }
+  
+    
+  
+    console.log("getting all recipes with find query", findQuery);
+    // return all of the recipes in the store
+  
+    Recipe.find(findQuery, function (err, recipes) {
+      // check if there was an error
+      if (err) {
+        console.log(`there was an error listing Recipes`, err);
+        // send back the error
+        res.status(500).json({ message: `unable to list Recipes`, error: err });
+        return;
+      }
+      // success!!! return all the todos
+      res.status(200).json(recipes);
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = app;
