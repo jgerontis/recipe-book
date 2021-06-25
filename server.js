@@ -34,12 +34,12 @@ app.get("/recipe", (req, res) => {
       res.status(500).json({ message: `unable to list Recipes`, error: err });
       return;
     }
-    // success!!! return all the todos
+    // success!!! return all the recipes
     res.status(200).json(recipes);
   });
 });
 
-// Get - gets the todo with the given id
+// Get - gets the recipe with the given id
 app.get("/recipe/:id", function (req, res) {
   res.setHeader("Content-Type", "application/json");
   console.log(`getting recipe with id: ${req.params.id}`);
@@ -117,6 +117,50 @@ app.delete("/recipe/:id", function (req, res) {
       res.status(200).json(recipe);
     }
   });
+});
+
+// Patch
+app.patch("/recipe/:id", function (req, res) {
+  console.log(`updating recipe with id: ${req.params.id} with body`, req.body);
+
+  let updateRecipe = {};
+  // name
+  if (req.body.name !== null && req.body.name !== undefined) {
+    updateRecipe.name = req.body.name;
+  }
+  // ingredients
+  if (req.body.ingredients !== null && req.body.ingredients !== undefined) {
+    updateRecipe.ingredients = req.body.ingredients;
+  }
+  // instructions
+  if (req.body.instructions !== null && req.body.instructions !== undefined) {
+    updateRecipe.instructions = req.body.done;
+  }
+
+  Recipe.updateOne(
+    { _id: req.params.id },
+    {
+      $set: updateRecipe,
+    },
+    function (err, updateOneResponse) {
+      if (err) {
+        console.log(`unable to patch recipe`);
+        res.status(500).json({
+          message: "unable to patch recipe",
+          error: err,
+        });
+        return;
+      } else if (updateOneResponse.n === 0) {
+        console.log(`unable to patch recipe with id ${req.params.id}`);
+        res.status(404).json({
+          message: `recipe with id ${req.params.id} not found`,
+          error: err,
+        });
+      } else {
+        res.status(200).json(updateOneResponse);
+      }
+    }
+  );
 });
 
 module.exports = app;
