@@ -163,4 +163,44 @@ app.patch("/recipe/:id", function (req, res) {
   );
 });
 
+
+// Put - replaces the todo with the given id`
+app.put("/recipe/:id", function (req, res) {
+    console.log(`replacing recipe with id: ${req.params.id} with body`, req.body);
+  
+    let updateRecipe = {
+      name: req.body.name || "",
+      instructions: req.body.instructions || "",
+      ingredients: req.body.ingredients || "",
+    };
+  
+    Recipe.updateOne(
+      { _id: req.params.id },
+      { 
+        $set: updateRecipe,
+       },
+      function (err, updateOneResponse) {
+        if (err) {
+          console.log(`unable to replace recipe`);
+          res.status(500).json({
+            message: "unable to replace recipe",
+            error: err,
+          });
+          return;
+        } else if (updateOneResponse.n === 0) {
+          console.log(`unable to replace recipe with id ${req.params.id}`);
+          res.status(404).json({
+            message: `recipe with id ${req.params.id} not found`,
+            error: err,
+          });
+        } else {
+          res.status(200).json(updateRecipe);
+        }
+      }
+    );
+  });
+
+
+
+
 module.exports = app;
